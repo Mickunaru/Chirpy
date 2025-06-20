@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	password "github.com/Mickunaru/Chirpy/internal/auth"
+	"github.com/Mickunaru/Chirpy/internal/auth"
 	"github.com/Mickunaru/Chirpy/internal/database"
 	"github.com/google/uuid"
 )
@@ -16,6 +16,7 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 	Email     string    `json:"email"`
 	Password  string    `json:"-"`
+	Token     string    `json:"token"`
 }
 
 func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +33,7 @@ func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	hashedPassword, err := password.HashPassword(params.Password)
+	hashedPassword, err := auth.HashPassword(params.Password)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't hash password", err)
 		return
